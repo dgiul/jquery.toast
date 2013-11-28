@@ -1,41 +1,153 @@
+/**
+*	A simple "toast" style message plugin for jQuery
+*	Originally developed by Soldier-B (https://github.com/Soldier-B/)
+*	Forked and modified by Dan Giulvezan (https://github.com/dgiul)
+*
+*	@param {Number} width The width of the notification (optional)
+*	@param {Number} top The distance form the top of the screen in pixels (optional)
+*	@param {String} align How to align the notification (options: left, right, center) (optional)
+*	@param {String} type The type of notification to show (options: default, success, info, warning, error/danger) (keeping danger becuase it was already there, but prefer error so if error is passed in it's treated like danger)
+*	@param {Boolean} sticky Should the notification close automatically after a brief delay, or stick on the screen until the user closes it? (options: true, false)
+*	@param {String} m The message to display, including any desired HTML markup (alternatively, can pass in 'title' and 'msg' to let this module determine which HTML to use
+*	@param {String} valign Where to position the notification vertically on the screen (options: top, bottom)
+*	@param {Boolean} solo Should the notification being created be the only one on the screen, and any others should be closed? (options: true, false)
+*
+*	@example $.toast({title:'Something went wrong',msg:'Oops, there was an error.',align:'center',valign:'bottom',bottom:40,type:'error'});
+*	@example $.toast({title:'Yay!',msg:'Great! It worked!',align:'right',type:'success'});
+*/
 (function($){
-	var th = null, cf = null, toast = function(m,o){
+	var th = null, cf = null, iv = null, ic = null, css = null, fps = 30, icon = null, animation = false, toast = function(m,o){
 		// fix option type
-		o = $.extend({ duration: 5000, sticky: false, 'type': ''}, o);
-		typeof o.duration === 'number' || (o.duration = 5000);
+		o = $.extend({}, ((!o) ? o = m : o = o)); // If m is empty use m as o so the code below works
+		typeof o.duration === 'number' || (o.duration = 6000);
 		typeof o.sticky === 'boolean' || (o.sticky = false);
-		typeof o.type === 'string' || (o.type = '');
+		typeof o.type === 'string' || (o.type = 'default');
+		typeof o.title === 'string' || (o.title = '');
+		typeof o.msg === 'string' || (o.msg = '');
+		typeof o.solo === 'boolean' || (o.solo = false);
+		switch(o.type) {
+			case 'error':
+				icon = 'rich-icon-remove-sign';
+				break;
+			case 'success':
+				icon = 'rich-icon-ok-sign';
+				break;
+			case 'warning':
+				icon = 'rich-icon-exclamation-sign';
+				break;
+			default:
+				icon = 'rich-icon-info-sign';
+		}
+		if (o.type == 'error') o.type = 'danger'; // I prefer to use 'error' but this original source is already using 'danger' so this translates it
 		// create host on first call
 		if(!th){ 
 			// get/fix config
 			cf = toast.config;
 			th = $('<ul></ul>').addClass('toast').appendTo(document.body).hide();
 			typeof cf.width === 'number' || (cf.width = 500);
+			typeof cf.top === 'number' || (cf.top = 5);
 			typeof cf.align === 'string' || (cf.align = 'center');
-			typeof cf.closeForStickyOnly === 'boolean' || (cf.closeForStickyOnly = false);
+			if (o.width) cf.width = o.width;
+			if (o.align) cf.align = o.align;
+			if (o.top) cf.top = o.top;
+			if (o.bottom) cf.bottom = o.bottom;
+			if (o.sticky) cf.sticky = o.sticky;
+			if (o.solo) cf.solo = o.solo;
 			th.width(cf.width);
+			iv = 1000 / fps; // interval in ms
+			//ic = (cf.width / (o.duration / 1000)) / fps; // step value
+			ic = (cf.width / (40000 / 1000)) / fps; // step value
 			(cf.align === 'left' || cf.align === 'right') && th.css('margin','5px').css(cf.align, '0') || th.css({left: '50%', margin: '5px 0 0 -' + (cf.width / 2) + 'px'});
+			if (o.valign == 'bottom') {
+				th.css('bottom', cf.bottom);
+			} else {
+				th.css('top', cf.top);
+			};
 		}
+
+		// Close any existing notifications if solo is set to true
+		if (cf.solo && $('.toast-message').length > 0) {
+			$.each( $('.toast-message'), function() {
+				//$(this).parent().trigger('click');
+				$(this).parent().remove();
+			});
+		}
+		
 		// create toast
-		var ti = $('<li></li>').hide().html(m).appendTo(th), cb = $('<button>&times;</button>').addClass('close').prependTo(ti), to = null;
-		// setup close button
-		cb.click(function(){
-			clearTimeout(to);
+		if (o.title !== '' || o.msg !== '') {
+			m = '<div class="toast-icon ' + o.type + '"><i class="' + icon + '"></i></div><div class="toast-message"><p class="title">' + o.title + '</p><p class="msg">' + o.msg + '</p></div>';
+		}
+		if (o.sticky == false) {
+			css = 'transition-duration: ' + iv + 'ms;';
+			css += '-webkit-' + css + '-moz-' + css + '-o-' + css + '-ms-' + css;
+			css += 'width:' + (cf.width - 22) + 'px;';
+					
+			m = m + '<div id="toast-progress" class="toast-progress ' + o.type + '" style="' + css + '">&nbsp;</div>';
+		}
+		var ti = $('<li class="' + o.type + '"></li>').hide().html(m).appendTo(th), to = null;
+		// clicking anywhere on the notifiction will close it
+		ti.click(function(){
+			clearInterval(to);
 			ti.animate({ height: 0, opacity: 0}, 'fast', function(){
 				ti.remove();
 				th.children().length || th.removeClass('active').hide();
 			});
 		});
-		cf.closeForStickyOnly && !o.sticky && cb.hide();
+		!o.sticky
 		// add type class
 		o.type !== '' && ti.addClass(o.type);
 		// show host if necessary
 		!th.hasClass('active') && th.addClass('active').show();
-		// setup timeout unless sticky
-		!o.sticky && o.duration > 0 && (to = setTimeout(function(){ cb.click(); }, o.duration));
+
+		if (!o.sticky && o.duration > 0) {
+			// Test if this browser supports CSS animations without using any external libraries
+			var animationstring = 'animation',
+			keyframeprefix = '',
+			domPrefixes = 'Webkit Moz O ms Khtml'.split(' '),
+			pfx  = '';
+			elm = document.createElement('div');
+
+			if( elm.style.animationName ) { animation = true; }
+
+			if( animation === false ) {
+				for( var i = 0; i < domPrefixes.length; i++ ) {
+					if( elm.style[ domPrefixes[i] + 'AnimationName' ] !== undefined ) {
+						pfx = domPrefixes[ i ];
+						animationstring = pfx + 'Animation';
+						keyframeprefix = '-' + pfx.toLowerCase() + '-';
+						animation = true;
+						break;
+					}
+				}
+			}
+
+			if (animation) {
+				// Setup the animation properties so we can trigger it in a moment
+				$('#toast-progress').css('width', cf.width - 22 + 'px');
+
+				$('#toast-progress').css(keyframeprefix + 'transition', 'width ' + o.duration/1000 + 's linear');
+
+				$('#toast-progress').off().on('webkitTransitionEnd oTransitionEnd otransitionend transitionend msTransitionEnd', function() {
+					$('#toast-progress').off();
+					ti.click();
+				});
+			} else {
+				// Use jQuery for the animation
+				$('#toast-progress').animate({ width: 0}, o.duration, function(){
+					ti.click();
+				});
+			}
+		}
+
 		// show toast
 		ti.fadeIn('normal');
+
+		if (animation) {
+			// Start animating the countdown bar
+			$('#toast-progress').css('width', '0px');
+		}
 	};
-	toast.config = { width: 500, align: 'center', closeForStickyOnly: true };
+
+	toast.config = { width: 500, top: 5, bottom: 5, align: 'center', solo: false};
 	$.extend({ toast: toast });
 })(jQuery);

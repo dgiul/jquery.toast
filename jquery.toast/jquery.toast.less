@@ -1,0 +1,117 @@
+// Colors
+@defaultText: #333333;
+@defaultBackgroundColor: #FDFDFD;
+@defaultBorderColor: #bbbbbb;
+@defaultGradientTop: #4098C4;
+@defaultGradientBottom: #3a87ad;
+
+@successText: #468847;
+@successBackgroundColor: #dff0d8;
+@successBorderColor: #d6e9c6;
+@successGradientTop: #54A256;
+@successGradientBottom: #468847;
+
+@infoText: #3a87ad;
+@infoBackgroundColor: #d9edf7;
+@infoBorderColor: #bce8f1;
+@infoGradientTop: #4098C4;
+@infoGradientBottom: #3a87ad;
+
+@dangerText: #b94a48;
+@dangerBackgroundColor: #f2dede;
+@dangerBorderColor: #eed3d7;
+@dangerGradientTop: #4098C4;
+@dangerGradientBottom: #3a87ad;
+
+@progressBorderColor: #e2e2e2;
+
+// Styles
+.toast {
+	position:fixed;
+	list-style: none;
+	padding: 0; 
+	z-index: 999999; 
+	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-size:14px;
+	line-height:20px;
+	cursor: pointer;
+
+	li {
+		margin: 10px 0 10px 0;
+		display:block;
+		border:1px solid;
+		padding: 0 10px 10px 10px;
+		border-radius: 4px;
+		-webkit-border-radius: 4px;
+		text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+		box-shadow: 0 2px 5px rgba(0,0,0,.15);
+		-webkit-box-shadow: 0 2px 5px rgba(0,0,0,.15);
+
+		&:first-child{ margin-top:0; }
+
+		&.default{ color: @defaultText; background-color: @defaultBackgroundColor; border-color: @defaultBorderColor; }
+		&.danger{ color: @dangerText; background-color: @dangerBackgroundColor; border-color: @dangerBorderColor; }
+		&.info{ color: @infoText; background-color: @infoBackgroundColor; border-color: @infoBorderColor; }
+		&.success{ color: @successText; background-color: @successBackgroundColor; border-color: @successBorderColor; }
+	}
+
+	h1, h2, h3, h4 { display: inline; }
+
+	.title {
+		font-size: 14.4px;
+		font-weight: bold;
+		margin-top: 5px;
+	}
+
+	.msg {
+		font-style: italic;
+		font-size: 13.4px;
+	}
+
+	
+}
+
+.toast-progress {
+	margin-top: 13px;
+	margin-bottom: 0px;
+	height: 4px;
+	border: 1px solid @progressBorderColor;
+	border-radius: 5px;
+
+	&.default {
+		background-color: @defaultGradientBottom;
+		background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(@defaultGradientTop), to(@defaultGradientBottom));
+		background: -webkit-linear-gradient(top, @defaultGradientTop, @defaultGradientBottom);
+		background: -moz-linear-gradient(top, @defaultGradientTop, @defaultGradientBottom);
+		background: -ms-linear-gradient(top, @defaultGradientTop, @defaultGradientBottom);
+		background: -o-linear-gradient(top, @defaultGradientTop, @defaultGradientBottom);
+	}
+
+	&.success {
+		background-color: @successGradientBottom;
+		background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(@successGradientTop), to(@successGradientBottom));
+		background: -webkit-linear-gradient(top, @successGradientTop, @successGradientBottom);
+		background: -moz-linear-gradient(top, @successGradientTop, @successGradientBottom);
+		background: -ms-linear-gradient(top, @successGradientTop, @successGradientBottom);
+		background: -o-linear-gradient(top, @successGradientTop, @successGradientBottom);
+	}
+
+	&.info {
+		background-color: @infoGradientBottom;
+		background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(@infoGradientTop), to(@infoGradientBottom));
+		background: -webkit-linear-gradient(top, @infoGradientTop, @infoGradientBottom);
+		background: -moz-linear-gradient(top, @infoGradientTop, @infoGradientBottom);
+		background: -ms-linear-gradient(top, @infoGradientTop, @infoGradientBottom);
+		background: -o-linear-gradient(top, @infoGradientTop, @infoGradientBottom);
+	}
+
+	&.danger {
+		background-color: @dangerGradientBottom;
+		background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(@dangerGradientTop), to(@dangerGradientBottom));
+		background: -webkit-linear-gradient(top, @dangerGradientTop, @dangerGradientBottom);
+		background: -moz-linear-gradient(top, @dangerGradientTop, @dangerGradientBottom);
+		background: -ms-linear-gradient(top, @dangerGradientTop, @dangerGradientBottom);
+		background: -o-linear-gradient(top, @dangerGradientTop, @dangerGradientBottom);
+	}
+}
+
