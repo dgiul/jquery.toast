@@ -6,7 +6,6 @@
 *	@param {Number} width The width of the notification (optional)
 *	@param {Number} top The distance form the top of the screen in pixels (optional)
 *	@param {String} align How to align the notification (options: left, right, center) (optional)
-*	@param {String} type The type of notification to show (options: default, success, info, warning, error/danger) (keeping danger becuase it was already there, but prefer error so if error is passed in it's treated like danger)
 *	@param {Boolean} sticky Should the notification close automatically after a brief delay, or stick on the screen until the user closes it? (options: true, false)
 *	@param {String} m The message to display, including any desired HTML markup (alternatively, can pass in 'title' and 'msg' to let this module determine which HTML to use
 *	@param {String} valign Where to position the notification vertically on the screen (options: top, bottom)
@@ -16,7 +15,7 @@
 *	@example $.toast({title:'Yay!',msg:'Great! It worked!',align:'right',type:'success'});
 */
 (function($){
-	var th = null, cf = null, iv = null, ic = null, css = null, fps = 30, icon = null, animation = false, toast = function(m,o){
+	var th = null, cf = null, iv = null, ic = null, css = null, fps = 30, animation = false, toast = function(m,o){
 		// fix option type
 		o = $.extend({}, ((!o) ? o = m : o = o)); // If m is empty use m as o so the code below works
 		typeof o.duration === 'number' || (o.duration = 6000);
@@ -25,20 +24,6 @@
 		typeof o.title === 'string' || (o.title = '');
 		typeof o.msg === 'string' || (o.msg = '');
 		typeof o.solo === 'boolean' || (o.solo = false);
-		switch(o.type) {
-			case 'error':
-				icon = 'rich-icon-remove-sign';
-				break;
-			case 'success':
-				icon = 'rich-icon-ok-sign';
-				break;
-			case 'warning':
-				icon = 'rich-icon-exclamation-sign';
-				break;
-			default:
-				icon = 'rich-icon-info-sign';
-		}
-		if (o.type == 'error') o.type = 'danger'; // I prefer to use 'error' but this original source is already using 'danger' so this translates it
 		// create host on first call
 		if(!th){ 
 			// get/fix config
@@ -75,7 +60,7 @@
 		
 		// create toast
 		if (o.title !== '' || o.msg !== '') {
-			m = '<div class="toast-icon ' + o.type + '"><i class="' + icon + '"></i></div><div class="toast-message"><p class="title">' + o.title + '</p><p class="msg">' + o.msg + '</p></div>';
+			m = '<div class="toast-icon ' + o.type + '"></div><div class="toast-message"><p class="title">' + o.title + '</p><p class="msg">' + o.msg + '</p></div>';
 		}
 		if (o.sticky == false) {
 			css = 'transition-duration: ' + iv + 'ms;';
