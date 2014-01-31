@@ -14,7 +14,16 @@
 *	@example $.toast({title:'Something went wrong',msg:'Oops, there was an error.',align:'center',valign:'bottom',bottom:40,type:'error'});
 *	@example $.toast({title:'Yay!',msg:'Great! It worked!',align:'right',type:'success'});
 */
-(function($){
+(function (factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(['jquery'], factory);
+    } else {
+        // Browser globals
+        factory(jQuery);
+    }
+}
+(function($) {
 	var th = null, cf = null, iv = null, ic = null, css = null, fps = 30, animation = false, toast = function(m,o){
 		// fix option type
 		o = $.extend({}, ((!o) ? o = m : o = o)); // If m is empty use m as o so the code below works
@@ -32,6 +41,7 @@
 			typeof cf.width === 'number' || (cf.width = 500);
 			typeof cf.top === 'number' || (cf.top = 5);
 			typeof cf.align === 'string' || (cf.align = 'center');
+			typeof cf.solo === 'boolean' || (cf.solo = false);
 			if (o.width) cf.width = o.width;
 			if (o.align) cf.align = o.align;
 			if (o.top) cf.top = o.top;
@@ -135,4 +145,4 @@
 
 	toast.config = { width: 500, top: 5, bottom: 5, align: 'center', solo: false};
 	$.extend({ toast: toast });
-})(jQuery);
+}));
