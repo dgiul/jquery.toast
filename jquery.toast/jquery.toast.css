@@ -18,10 +18,6 @@
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
   -webkit-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-  /*&.error{ color: @errorText; background-color: @errorBackgroundColor; border-color: @errorBorderColor; }
-		&.info{ color: @infoText; background-color: @infoBackgroundColor; border-color: @infoBorderColor; }
-		&.warning{ color: @warningText; background-color: @warningBackgroundColor; border-color: @warningBorderColor; }
-		&.success{ color: @successText; background-color: @successBackgroundColor; border-color: @successBorderColor; }*/
 }
 .toast li:first-child {
   margin-top: 0;
@@ -185,4 +181,16 @@
 }
 .toast-message {
   margin-left: 50px;
+}
+.toast-message ul {
+  padding: 0 0 0 10px;
+}
+.toast-message ul li {
+  border: 0;
+  margin: 10px 0 0 0;
+  text-shadow: none;
+  box-shadow: none;
+  border-radius: none;
+  -webkit-box-shadow: none;
+  -webkit-border-radius: none;
 }

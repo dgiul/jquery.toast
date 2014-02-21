@@ -55,8 +55,6 @@
 
 		&:first-child{ margin-top:0; }
 
-		//&.default{ color: @defaultText; background-color: @defaultBackgroundColor; border-color: @defaultBorderColor; }
-		//&.default{ @include background-image(linear-gradient(rgba(255,255,255,1.0), rgba(235,235,235,1.0))); }
 		&.default, &.error, &.info, &.warning, &.success{
 			background: rgb(235,235,235); /* Old browsers */
 			/* IE9 SVG, needs conditional override of 'filter' to 'none' */
@@ -70,10 +68,6 @@
 			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ebebeb',GradientType=0 ); /* IE6-8 */
 			border-color: @defaultBorderColor;
 		}
-		/*&.error{ color: @errorText; background-color: @errorBackgroundColor; border-color: @errorBorderColor; }
-		&.info{ color: @infoText; background-color: @infoBackgroundColor; border-color: @infoBorderColor; }
-		&.warning{ color: @warningText; background-color: @warningBackgroundColor; border-color: @warningBorderColor; }
-		&.success{ color: @successText; background-color: @successBackgroundColor; border-color: @successBorderColor; }*/
 	}
 
 	h1, h2, h3, h4 { display: inline; }
@@ -246,4 +240,19 @@
 
 .toast-message {
 	margin-left: 50px;
+
+	ul {
+		padding: 0 0 0 10px;
+
+		li {
+			border: 0;
+			//padding: 0;
+			margin: 10px 0 0 0;
+			text-shadow: none;
+			box-shadow: none;
+			border-radius: none;
+			-webkit-box-shadow: none;
+			-webkit-border-radius: none;
+		}
+	}
 }
