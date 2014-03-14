@@ -24,6 +24,14 @@
     }
 }
 (function($) {
+	var isIE = (function() {
+		// First part detects IE 10 and under, the second IE 10+
+		if (new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})").exec(navigator.userAgent) != null || document.body.style.msTouchAction !== undefined) { 
+			return true;
+		} else { 
+			return false; 
+		} 
+	})();
 	var th = null, cf = null, iv = null, ic = null, css = null, fps = 30, animation = false, toast = function(m,o){
 		// fix option type
 		o = $.extend({}, ((!o) ? o = m : o = o)); // If m is empty use m as o so the code below works
@@ -73,9 +81,12 @@
 			m = '<div class="toast-icon ' + o.type + '"></div><div class="toast-message"><p class="title">' + o.title + '</p><p class="msg">' + o.msg + '</p></div>';
 		}
 		if (o.sticky == false) {
-			css = 'transition-duration: ' + iv + 'ms;';
-			css += '-webkit-' + css + '-moz-' + css + '-o-' + css + '-ms-' + css;
-			css += 'width:' + (cf.width - 22) + 'px;';
+			css = 'width:' + (cf.width - 22) + 'px;';
+
+			if (!isIE) {
+				css = 'transition-duration: ' + iv + 'ms;';
+				css += '-webkit-' + css + '-moz-' + css + '-o-' + css;
+			};
 					
 			m = m + '<div id="toast-progress" class="toast-progress ' + o.type + '" style="' + css + '">&nbsp;</div>';
 		}
@@ -98,7 +109,7 @@
 			// Test if this browser supports CSS animations without using any external libraries
 			var animationstring = 'animation',
 			keyframeprefix = '',
-			domPrefixes = 'Webkit Moz O ms Khtml'.split(' '),
+			domPrefixes = 'Webkit Moz O Khtml'.split(' '),
 			pfx  = '';
 			elm = document.createElement('div');
 
@@ -122,7 +133,7 @@
 
 				$('#toast-progress').css(keyframeprefix + 'transition', 'width ' + o.duration/1000 + 's linear');
 
-				$('#toast-progress').off().on('webkitTransitionEnd oTransitionEnd otransitionend transitionend msTransitionEnd', function() {
+				$('#toast-progress').off().on('webkitTransitionEnd oTransitionEnd otransitionend transitionend', function() {
 					$('#toast-progress').off();
 					ti.click();
 				});
